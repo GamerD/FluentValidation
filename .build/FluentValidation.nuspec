@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>FluentValidation</id>
-    <version></version>
+    <version>5.1.1.0</version>
     <authors>Jeremy Skinner</authors>
     <licenseUrl>http://fluentvalidation.codeplex.com/license</licenseUrl>
     <projectUrl>http://fluentvalidation.codeplex.com</projectUrl>
