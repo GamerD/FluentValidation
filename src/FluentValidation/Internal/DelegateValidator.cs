@@ -23,6 +23,7 @@ namespace FluentValidation.Internal {
 	using System.Threading.Tasks;
 	using Results;
 	using Validators;
+  using System.Linq.Expressions;
 
 	/// <summary>
 	/// Custom IValidationRule for performing custom logic.
@@ -35,6 +36,8 @@ namespace FluentValidation.Internal {
 		// Work-around for reflection bug in .NET 4.5
 		static Func<object, bool> s_condition = x => true;
 		private Func<object, bool> condition = s_condition;
+    private Expression expression;
+    public Expression Expression { get { return expression; } }
 
 		/// <summary>
 		/// Rule set to which this rule belongs.
@@ -124,10 +127,11 @@ namespace FluentValidation.Internal {
 			return ValidateAsync(newContext);
 		}
 
-		public void ApplyCondition(Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
+		public void ApplyCondition(Expression<Func<object, bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
 			// For custom rules within the DelegateValidator, we ignore ApplyConiditionTo - this is only relevant to chained rules using RuleFor.
 			var originalCondition = this.condition;
-			this.condition = x => predicate(x) && originalCondition(x);
+			this.condition = x => predicate.Compile()(x) && originalCondition(x);
+      this.expression = predicate;
 		}
 	}
 }

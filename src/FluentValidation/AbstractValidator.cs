@@ -238,7 +238,7 @@ namespace FluentValidation {
 		/// <param name="predicate">The condition that should apply to multiple rules</param>
 		/// <param name="action">Action that encapsulates the rules.</param>
 		/// <returns></returns>
-		public void When(Func<T, bool> predicate, Action action) {
+		public void When(Expression<Func<T, bool>> predicate, Action action) {
 			var propertyRules = new List<IValidationRule>();
 
 			Action<IValidationRule> onRuleAdded = propertyRules.Add;

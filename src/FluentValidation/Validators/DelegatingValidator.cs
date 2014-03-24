@@ -24,13 +24,15 @@ namespace FluentValidation.Validators {
 	using FluentValidation.Internal;
 	using Resources;
 	using Results;
+  using System.Linq.Expressions;
 
 	public class DelegatingValidator : IPropertyValidator, IDelegatingValidator {
 		private readonly Func<object, bool> condition;
 		public IPropertyValidator InnerValidator { get; private set; }
 
-		public DelegatingValidator(Func<object, bool> condition, IPropertyValidator innerValidator) {
-			this.condition = condition;
+		public DelegatingValidator(Expression<Func<object, bool>> condition, IPropertyValidator innerValidator) {
+			this.condition = condition.Compile();
+      this.Expression = condition;
 			InnerValidator = innerValidator;
 		}
 
@@ -69,6 +71,8 @@ namespace FluentValidation.Validators {
 		IPropertyValidator IDelegatingValidator.InnerValidator {
 			get { return InnerValidator; }
 		}
+
+    public Expression Expression { get; set; }
 	}
 
 	public interface IDelegatingValidator : IPropertyValidator {

@@ -23,6 +23,7 @@ namespace FluentValidation {
 	using Internal;
 	using Results;
 	using Validators;
+  using System.Linq.Expressions;
 
 	/// <summary>
 	/// Defines a rule associated with a property which can have multiple validators.
@@ -51,6 +52,6 @@ namespace FluentValidation {
 		/// <returns>A collection of validation failures</returns>
 		Task<IEnumerable<ValidationFailure>> ValidateAsync(ValidationContext context);
 
-		void ApplyCondition(Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators);
+		void ApplyCondition(Expression<Func<object, bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators);
 	}
 }

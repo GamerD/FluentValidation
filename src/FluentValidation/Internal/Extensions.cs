@@ -142,6 +142,23 @@ namespace FluentValidation.Internal {
 			return x => func((T)x);
 		}
 
+    public static Expression<Func<object, bool>> CoerceToNonGeneric<T>(this Expression<Func<T, bool>> func) {
+      var visitor = new CoerceNonGenericExpVisitor<T>();
+      return visitor.Coerce(func);
+    }
+
+    public class CoerceNonGenericExpVisitor<T> : ExpressionVisitor {
+      private ParameterExpression param = Expression.Parameter(typeof(object));
+
+      protected override Expression VisitParameter(ParameterExpression node) {
+        return Expression.Convert(param, typeof(T));
+      }
+
+      public Expression<Func<object, bool>> Coerce(Expression<Func<T, bool>> original) {
+        return Expression.Lambda<Func<object, bool>>(Visit(original.Body), param);
+      }
+    }
+
 		public static Action<object> CoerceToNonGeneric<T>(this Action<T> action) {
 			return x => action((T)x);
 		}
